@@ -19,8 +19,6 @@ namespace Aimbot {
 
 		const auto local_player = Interfaces::EntityList->GetEntity(Interfaces::EngineClient->GetLocalPlayer());
 
-		Angle viewAng;
-		Interfaces::EngineClient->GetViewAngles(viewAng);
 		float bestFov = 180.f;
 		Angle bestAngle = Angle(0, 0, 0);
 		CEntity* bestTarget = nullptr;
@@ -49,7 +47,7 @@ namespace Aimbot {
 
 			Angle aimAng = Math::CalcAngle(local_player->GetEyePos(), hitPos);
 
-			float fov = Math::GetFov(viewAng, aimAng);
+			float fov = Math::GetFov(cmd->viewangles, aimAng);
 
 			if (fov > Vars.aim_fov) continue;
 

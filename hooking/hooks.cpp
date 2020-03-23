@@ -50,32 +50,6 @@ LRESULT __stdcall hkWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return CallWindowProcW(oWndProc, hwnd, msg, wParam, lParam);
 }
 
-Angle SpreadAngle(CUserCmd* cmd, CEntity* LocalPlayer)
-{
-	auto FloatNegate = [](float f) -> float
-	{
-		return -f;
-	};
-
-	Vector SpreadCone = LocalPlayer->GetActiveWeapon()->GetBulletSpread();
-	float Spread = FloatNegate((SpreadCone.x + SpreadCone.y + SpreadCone.z) / 3);
-
-	float Random[2];
-	unsigned int seed = MD5_PseudoRandom(cmd->command_nr) & 0xFF;
-	Interfaces::Random->SetSeed(seed);
-
-	Random[0] = Interfaces::Random->RandomFloat(-0.5f, 0.5f) + Interfaces::Random->RandomFloat(-0.5f, 0.5f);
-	Random[1] = Interfaces::Random->RandomFloat(-0.5f, 0.5f) + Interfaces::Random->RandomFloat(-0.5f, 0.5f);
-
-	Vector ShootDirection = Vector(1.0f, 0.0f, 0.0f) + (Vector(0.0f, -1.0f, 0.0f) * Spread * Random[0]) + (Vector(0.0f, 0.0f, 1.0f) * Spread * Random[1]); // 0,0,0
-
-	Angle out = Math::CalcAngle(Vector(0, 0, 0), ShootDirection);
-	Math::NormalizeAngles(out);
-	Math::ClampAngles(out);
-
-	return out;
-}
-
 void __fastcall Hooks::hkPaintTraverse(IPanel* p_panel, void*, unsigned int panel, bool force_repaint, bool allow_force)
 {
 	static auto oPaintTraverse = panel_hook.get_original<tPaintTraverse>(41);
